@@ -17,17 +17,30 @@ def createMsgs(numMsg, numNodes, G):
 
 def transmitMsgs(msgList, G):
     nf, nd = (0,0)
+    for n in G.nodes():
+        neigList = list(G.neighbors(n))
+        agent = G.nodes[n]['agent']
+        agent.initNeig(neigList)
     for m in msgList:
+        # print(m)
         s, i, d = m
         source = G.nodes[s]['agent']
         inter = G.nodes[i]['agent']
         dest = G.nodes[d]['agent']
-
         source.sendMessage(i)
-        sent = inter.forwardMessage(s,d)
+        inter_burntout = inter.burnoutUpdate()
+        if(not inter_burntout):
+            sent = inter.forwardMessage(s,d)
+        else:
+            sent = False
         source.sendOutcome(i,sent)
-        if sent==1:
-            nf+=1
+        # print(getNetworkProp(G, 'forwardProb'))
+        if sent:
+            nf += 1
         else: 
-            nd+=1
+            nd += 1
     return nf, nd
+
+def getNetworkProp(G, prop):
+    agents = [G.nodes[i]['agent'] for i in G.nodes()]
+    return [agent.getProperty(prop) for agent in agents]
