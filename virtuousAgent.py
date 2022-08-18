@@ -41,9 +41,6 @@ class virtuousAgent(ethicalAgent):
             dropUtility = -3*self.virtueChange
         else:
             dropUtility = -self.virtueChange
-        shift = 1-min(forwardUtility, dropUtility)
-        forwardUtility += shift
-        dropUtility += shift
         forwardProb = softmax([forwardUtility, dropUtility])[0]
 
         if(random.random() < forwardProb): #Forward message
