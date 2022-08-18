@@ -7,9 +7,9 @@ class deonticAgent(ethicalAgent):
     def __init__(self, attrs={}):
         '''
         default values
-            msgUtility = 10
-            msgCost = 0.1*msgUtility
             experience = 10
+            learning rate = 0.1
+            forwardProb = between 0.5 and 1
         '''
         super().__init__("Deontology",attrs)
         if('experience' in attrs):

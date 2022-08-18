@@ -3,6 +3,13 @@ import numpy as np
 
 class ethicalAgent(object):
     def __init__(self,type,attrs={}):
+        '''
+        default values 
+            msgUtility = 10
+            msgCost = 0.1*msgUtility
+            burnoutDrop = 5
+            burnoutThreshold = 10*msgCost
+        '''
         if('msgUtility' in attrs):
             self.msgUtility = attrs['msgUtility']
         else:
@@ -82,9 +89,9 @@ class ethicalAgent(object):
                     self.burnoutState = 1
         return self.isBurntout
 
-    @abstractclassmethod
-    def sentOutcome(self, inter, sent):
-        pass
+    def sendOutcome(self, inter, sent):
+        if sent:
+            self.msgForwardedBy[inter] += 1
 
     @abstractclassmethod
     def forwardMessage(self, source , dest):
