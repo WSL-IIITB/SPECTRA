@@ -67,15 +67,21 @@ def plotAgentWiseVaryParams(outcomeNetwork, prop, attr, plotType="line"):
     ax.set_title("Varying "+attr)
     ax.legend()
 
-def plotNetworkVaryParams(outcomeNetwork, prop, attr, metric="sum"):
+def plotAsPerType(x, y, ax, plotType="line"):
+    if(plotType=='bar'):
+        ax.bar(x,y)
+    elif(plotType=="line"):
+        ax.plot(x,y)
+def plotNetworkVaryParams(outcomeNetwork, prop, attr, metric="sum", plotType = 'line'):
     # propertyValues = getNetworkProp(outcomeNetwork, prop)
     if(metric=="sum"):
         y_vals = [np.sum(getNetworkProp(outcomeNetwork[val], prop)) for val in outcomeNetwork]
     elif(metric=="mean"):
         y_vals = [np.mean(getNetworkProp(outcomeNetwork[val], prop)) for val in outcomeNetwork]
-    print(list(range(len(outcomeNetwork))),)
-    plt.xticks(range(len(outcomeNetwork)),list(outcomeNetwork.keys()))
-    plt.plot(list(outcomeNetwork.keys()), y_vals)
-    plt.xlabel(attr)
-    plt.ylabel(prop)
-    plt.title(metric+" of "+prop+" by varying "+attr)
+    _, ax = plt.subplots()
+    plotAsPerType(list(outcomeNetwork.keys()), y_vals, ax, plotType)
+    ax.set_xticks(range(len(outcomeNetwork)),list(outcomeNetwork.keys()))
+    ax.set_xlabel(attr)
+    ax.set_ylabel(prop)
+    ax.set_title(metric+" of "+prop+" by varying "+attr)
+    return y_vals
