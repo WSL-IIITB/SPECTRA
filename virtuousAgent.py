@@ -1,6 +1,5 @@
 #Virtue : Reliability
 import random
-from turtle import forward
 import numpy as np
 from ethicalAgent import ethicalAgent
 from miscFunctions import *

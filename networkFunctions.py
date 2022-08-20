@@ -1,4 +1,28 @@
 import random
+import networkx as nx
+from deonticAgent import deonticAgent
+from virtuousAgent import virtuousAgent
+from utilitarianAgent import utilitarianAgent
+#graph initialization
+
+def initGraph(G, numNodes, common_attrs, type='Virtue'):
+
+    nodeAttr = {}
+    for i in range(numNodes):
+        temp = {}
+        if(type=='Utilitarian'):
+            temp['agent'] = utilitarianAgent(common_attrs)
+        elif(type=='Virtue'):
+            temp['agent'] = virtuousAgent(common_attrs)
+        elif(type=='Deontology'):
+            temp['agent'] = deonticAgent(common_attrs)
+        nodeAttr[i] = temp
+    nx.set_node_attributes(G, nodeAttr)
+
+    for n in G.nodes():
+        neigList = list(G.neighbors(n))
+        agent = G.nodes[n]['agent']
+        agent.initNeig(neigList)
 
 def createMsgs(numMsg, numNodes, G):
     msgList = []

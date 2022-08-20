@@ -65,7 +65,15 @@ class ethicalAgent(object):
     
     def getBurnouts(self):
         return self.burnoutCount
+
+    def getDropCount(self): 
+        totalMessagesDropped = np.sum(list(self.msgSentTo.values()))-np.sum(list(self.msgForwardedBy.values()))-np.sum(list(self.msgForwardedOf.values()))
+        return totalMessagesDropped
     
+    def getForwardCount(self):
+        totalMessagesForwarded = np.sum(list(self.msgForwardedBy.values()))
+        return totalMessagesForwarded
+
     def getProperty(self, prop):
         if(prop == 'cost'):
             return self.getNodeCost()
@@ -73,6 +81,10 @@ class ethicalAgent(object):
             return self.getNodeUtility()
         elif(prop == 'burnout'):
             return self.getBurnouts()
+        elif(prop == 'drops'):
+            return self.getDropCount()
+        elif(prop == 'forwards'):
+            return self.getForwardCount()
         return "NA"
 
     def burnoutUpdate(self):
