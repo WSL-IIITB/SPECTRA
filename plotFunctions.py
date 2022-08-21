@@ -67,30 +67,34 @@ def plotAgentWiseVaryParams(outcomeNetwork, prop, attr, plotType="line"):
     ax.set_title("Varying "+attr)
     ax.legend()
 
-def plotAsPerType(x, y, ax, plotType="line"):
+def plotAsPerType(x, y, ystd, ax, plotType="line"):
     if(plotType=='bar'):
-        ax.bar(x,y,color='brg')
+        ax.bar(x,y,yerr=ystd, color='brg', align='center', alpha=0.5, ecolor='black', capsize=10)
     elif(plotType=="line"):
         ax.plot(x,y)
 def plotNetworkVaryParams(outcomeNetwork, prop, attr, metric="sum", plotType = 'line'):
     # propertyValues = getNetworkProp(outcomeNetwork, prop)
+    y_std=[]
     if(metric=="sum"):
         y_vals = [np.sum(getNetworkProp(outcomeNetwork[val], prop)) for val in outcomeNetwork]
     elif(metric=="mean"):
         y_vals = [np.mean(getNetworkProp(outcomeNetwork[val], prop)) for val in outcomeNetwork]
+        y_std = [np.std(getNetworkProp(outcomeNetwork[val], prop)) for val in outcomeNetwork]
+        y_stderror = [value/len(y_std) for value in y_std]
     _, ax = plt.subplots()
-    plotAsPerType(list(outcomeNetwork.keys()), y_vals, ax, plotType)
+    print("yerr ", y_stderror)
+    plotAsPerType(list(outcomeNetwork.keys()), y_vals, y_stderror, ax, plotType)
     ax.set_xticks(range(len(outcomeNetwork)),list(outcomeNetwork.keys()))
-    if(prop=="cost"):
-        ax.set_ylim(3,4.5)
-    elif(prop=="utility"):
-        ax.set_ylim(10,16)
-    elif(prop=="burnout"):
-        ax.set_ylim(0.15,0.35)
-    elif(prop=="forwards"):
-        ax.set_ylim(1.4,2.00)
-    elif(prop=="drops"):
-        ax.set_ylim(.25,.60)
+    # if(prop=="cost"):
+    #     ax.set_ylim(3,4.5)
+    # elif(prop=="utility"):
+    #     ax.set_ylim(10,16)
+    # elif(prop=="burnout"):
+    #     ax.set_ylim(0.15,0.35)
+    # elif(prop=="forwards"):
+    #     ax.set_ylim(1.4,2.00)
+    # elif(prop=="drops"):
+    #     ax.set_ylim(.25,.60)
     ax.set_xlabel(attr)
     ax.set_ylabel(prop)
     ax.set_title(metric+" of "+prop+" by varying "+attr)
