@@ -19,7 +19,7 @@ class deonticAgent(ethicalAgent):
         if('forwardProb' in attrs):
             self.forwardProb = attrs['forwardProb']
         else:
-            self.forwardProb = 0.5+random.random()/2
+            self.forwardProb = 0.75+random.random()/4
         if('learningRate' in attrs):
             self.learningRate = attrs['learningRate']
         else:

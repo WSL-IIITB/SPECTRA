@@ -27,6 +27,7 @@ def initGraph(G, numNodes, common_attrs, type='Virtue'):
 def createMsgs(numMsg, numNodes, G):
     msgList = []
     n = numNodes-1
+    random.seed(2)
     while(len(msgList) < numMsg):
         inter = random.randint(0, n)
         neigList = list(G.neighbors(inter))

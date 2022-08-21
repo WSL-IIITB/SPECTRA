@@ -69,7 +69,7 @@ def plotAgentWiseVaryParams(outcomeNetwork, prop, attr, plotType="line"):
 
 def plotAsPerType(x, y, ax, plotType="line"):
     if(plotType=='bar'):
-        ax.bar(x,y)
+        ax.bar(x,y,color='brg')
     elif(plotType=="line"):
         ax.plot(x,y)
 def plotNetworkVaryParams(outcomeNetwork, prop, attr, metric="sum", plotType = 'line'):
@@ -81,6 +81,16 @@ def plotNetworkVaryParams(outcomeNetwork, prop, attr, metric="sum", plotType = '
     _, ax = plt.subplots()
     plotAsPerType(list(outcomeNetwork.keys()), y_vals, ax, plotType)
     ax.set_xticks(range(len(outcomeNetwork)),list(outcomeNetwork.keys()))
+    if(prop=="cost"):
+        ax.set_ylim(3,4.5)
+    elif(prop=="utility"):
+        ax.set_ylim(10,16)
+    elif(prop=="burnout"):
+        ax.set_ylim(0.15,0.35)
+    elif(prop=="forwards"):
+        ax.set_ylim(1.4,2.00)
+    elif(prop=="drops"):
+        ax.set_ylim(.25,.60)
     ax.set_xlabel(attr)
     ax.set_ylabel(prop)
     ax.set_title(metric+" of "+prop+" by varying "+attr)
