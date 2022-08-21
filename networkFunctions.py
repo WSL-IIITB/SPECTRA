@@ -3,6 +3,7 @@ import networkx as nx
 from deonticAgent import deonticAgent
 from virtuousAgent import virtuousAgent
 from utilitarianAgent import utilitarianAgent
+from transcendenceAgent import transcendenceAgent
 #graph initialization
 
 def initGraph(G, numNodes, common_attrs, type='Virtue'):
@@ -10,12 +11,15 @@ def initGraph(G, numNodes, common_attrs, type='Virtue'):
     nodeAttr = {}
     for i in range(numNodes):
         temp = {}
+        type = type.split(" ")[0]
         if(type=='Utilitarian'):
             temp['agent'] = utilitarianAgent(common_attrs)
         elif(type=='Virtue'):
             temp['agent'] = virtuousAgent(common_attrs)
         elif(type=='Deontology'):
             temp['agent'] = deonticAgent(common_attrs)
+        elif(type=='Transcendence'):
+            temp['agent'] = transcendenceAgent(common_attrs)
         nodeAttr[i] = temp
     nx.set_node_attributes(G, nodeAttr)
 

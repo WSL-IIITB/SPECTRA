@@ -51,7 +51,7 @@ class deonticAgent(ethicalAgent):
             return self.getForwardProb()
         return super().getProperty(prop)
 
-    def isStable(self, prevState):
-        if np.absolute(self.forwardProb - prevState.getForwardProb()) < 5e-2:
+    def isStable(self, previousState):
+        if np.absolute(self.forwardProb - previousState.getForwardProb()) < 5e-2:
             return 1
         return 0

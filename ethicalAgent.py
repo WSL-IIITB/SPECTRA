@@ -36,7 +36,7 @@ class ethicalAgent(object):
         self.msgRecvFrom = {}
         self.msgForwardedBy = {}
         self.msgForwardedOf = {}
-    
+
     def initNeig(self, neigs):
         for nei in neigs:
             self.msgSentTo[nei] = 0
@@ -104,6 +104,9 @@ class ethicalAgent(object):
     def sendOutcome(self, inter, sent):
         if sent:
             self.msgForwardedBy[inter] += 1
+
+    def epochUpdate(self):
+        return
 
     @abstractclassmethod
     def forwardMessage(self, source , dest):

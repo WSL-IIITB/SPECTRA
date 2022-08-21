@@ -1,3 +1,4 @@
+import enum
 import numpy as np
 import matplotlib.pyplot as plt
 from networkFunctions import getNetworkProp
@@ -69,12 +70,17 @@ def plotAgentWiseVaryParams(outcomeNetwork, prop, attr, plotType="line"):
 
 def plotAsPerType(x, y, ystd, ax, plotType="line"):
     if(plotType=='bar'):
-        ax.bar(x,y,yerr=ystd, color='brg', align='center', alpha=0.5, ecolor='black', capsize=10)
+        ax.bar(x,y,yerr=ystd, color=['b','g','r','y'], align='center', alpha=0.5, ecolor='black', capsize=10)
+        # ax.text(list(range(len(x))),np.zeros(len(y)),["sample" for _ in range(len(y))])#,[str(val) for val in y])
+        for i in range(len(x)):
+            ax.text(i,y[i]/2,y[i],ha = 'center')
+
     elif(plotType=="line"):
         ax.plot(x,y)
+
 def plotNetworkVaryParams(outcomeNetwork, prop, attr, metric="sum", plotType = 'line'):
     # propertyValues = getNetworkProp(outcomeNetwork, prop)
-    y_std=[]
+    y_stderror = np.zeros(len(outcomeNetwork))
     if(metric=="sum"):
         y_vals = [np.sum(getNetworkProp(outcomeNetwork[val], prop)) for val in outcomeNetwork]
     elif(metric=="mean"):
@@ -82,19 +88,8 @@ def plotNetworkVaryParams(outcomeNetwork, prop, attr, metric="sum", plotType = '
         y_std = [np.std(getNetworkProp(outcomeNetwork[val], prop)) for val in outcomeNetwork]
         y_stderror = [value/len(y_std) for value in y_std]
     _, ax = plt.subplots()
-    print("yerr ", y_stderror)
     plotAsPerType(list(outcomeNetwork.keys()), y_vals, y_stderror, ax, plotType)
     ax.set_xticks(range(len(outcomeNetwork)),list(outcomeNetwork.keys()))
-    # if(prop=="cost"):
-    #     ax.set_ylim(3,4.5)
-    # elif(prop=="utility"):
-    #     ax.set_ylim(10,16)
-    # elif(prop=="burnout"):
-    #     ax.set_ylim(0.15,0.35)
-    # elif(prop=="forwards"):
-    #     ax.set_ylim(1.4,2.00)
-    # elif(prop=="drops"):
-    #     ax.set_ylim(.25,.60)
     ax.set_xlabel(attr)
     ax.set_ylabel(prop)
     ax.set_title(metric+" of "+prop+" by varying "+attr)
