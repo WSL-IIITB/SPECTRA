@@ -1,25 +1,21 @@
 import random
 import networkx as nx
-from deonticAgent import deonticAgent
-from virtuousAgent import virtuousAgent
-from utilitarianAgent import utilitarianAgent
-from transcendenceAgent import transcendenceAgent
+import numpy as np
 
 class populationGraph(object):
-    def __init__(self, G, common_attrs, type='Virtue'):
+    def __init__(self, G, ratios, agent_types, common_attrs):
         nodeAttr = {}
+        if(not self.__validateArgs(ratios, agent_types)):
+            print("Invalid ratios or mismatch in number of agent types and number of ratios")
+            return
+        cumRatio = [ratios[0]]
+        for i in range(1, len(ratios)):
+            cumRatio.append(ratios[i]+cumRatio[-1])
         self.numNodes = len(G.nodes())
         for i in range(self.numNodes):
             temp = {}
-            type = type.split(" ")[0]
-            if(type=='Utilitarian'):
-                temp['agent'] = utilitarianAgent(common_attrs)
-            elif(type=='Virtue'):
-                temp['agent'] = virtuousAgent(common_attrs)
-            elif(type=='Deontology'):
-                temp['agent'] = deonticAgent(common_attrs)
-            elif(type=='Transcendence'):
-                temp['agent'] = transcendenceAgent(common_attrs)
+            idx = self.__getSample(cumRatio)
+            temp['agent'] = agent_types[idx](common_attrs)
             nodeAttr[i] = temp
         self.G = G
         self.msgList = []
@@ -29,6 +25,21 @@ class populationGraph(object):
             neigList = list(G.neighbors(n))
             agent = self.G.nodes[n]['agent']
             agent.initNeig(neigList)
+
+    def __validateArgs(self, ratios, agent_types):
+        if(len(ratios) <= 0):
+            return False
+        if(len(ratios) != len(agent_types)):
+            return False
+        if(sum(ratios) != 1 and np.array(ratios) > 0):
+            return False
+        return True
+    
+    def __getSample(self, cumRatio):
+        sample = random.random()
+        for idx, val in enumerate(cumRatio):
+            if(sample <= val):
+                return idx
 
     def createMsgs(self, numMsg,myseed = 32):
         msgList = []
