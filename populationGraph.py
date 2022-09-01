@@ -1,9 +1,11 @@
 import random
 import networkx as nx
 import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
 
 class populationGraph(object):
-    def __init__(self, G, ratios, agent_types, common_attrs):
+    def __init__(self, numNodes, ratios, agent_types, common_attrs, graphType=nx.erdos_renyi_graph, seed=67):
         nodeAttr = {}
         if(not self.__validateArgs(ratios, agent_types)):
             print("Invalid ratios or mismatch in number of agent types and number of ratios")
@@ -11,18 +13,23 @@ class populationGraph(object):
         cumRatio = [ratios[0]]
         for i in range(1, len(ratios)):
             cumRatio.append(ratios[i]+cumRatio[-1])
-        self.numNodes = len(G.nodes())
+        self.numNodes = numNodes
+        self.seed = seed
+        self.colorIdx = []
         for i in range(self.numNodes):
             temp = {}
             idx = self.__getSample(cumRatio)
+            self.colorIdx.append(idx)
             temp['agent'] = agent_types[idx](common_attrs)
             nodeAttr[i] = temp
-        self.G = G
+        self.G = graphType(self.numNodes, 0.2, seed=self.seed)
         self.msgList = []
         nx.set_node_attributes(self.G, nodeAttr)
-
+        self.agentMapping = {}
+        for idx, agentType in enumerate(agent_types):
+            self.agentMapping[idx] = agentType().getType()
         for n in self.G.nodes():
-            neigList = list(G.neighbors(n))
+            neigList = list(self.G.neighbors(n))
             agent = self.G.nodes[n]['agent']
             agent.initNeig(neigList)
 
@@ -35,6 +42,17 @@ class populationGraph(object):
             return False
         return True
     
+    def plotGraph(self, layout=nx.spring_layout, colorMap = 'Set3'):
+        myPos = layout(self.G, seed = self.seed)
+        fig, ax = plt.subplots()
+        cmap = matplotlib.cm.get_cmap(colorMap)
+        nx.draw(self.G, ax=ax, pos=myPos, node_color = [cmap(idx) for idx in self.colorIdx], with_labels=True)
+        # ax.legend(labels=self.agentMapping.values(), labelcolor=cmap(list(self.agentMapping.keys())))
+        for key in self.agentMapping:
+            ax.scatter([],[],color=cmap(key),label=self.agentMapping[key])
+        ax.legend()
+        # plt.show()
+        
     def __getSample(self, cumRatio):
         sample = random.random()
         for idx, val in enumerate(cumRatio):
