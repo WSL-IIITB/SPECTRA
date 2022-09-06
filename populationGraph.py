@@ -106,6 +106,14 @@ class populationGraph(object):
         agents = [self.G.nodes[i]['agent'] for i in self.G.nodes()]
         return [agent.getProperty(prop) for agent in agents]
     
-    
     def getGraph(self):
         return self.G
+
+    def getResilience(self):
+        expectedUtility = np.sum(self.getNetworkProp('utility'))/self.numNodes 
+        probBurnout = np.sum(self.getNetworkProp('burnout'))/self.numNodes
+        print(probBurnout)
+        resilience = expectedUtility*(1-probBurnout)
+        return resilience
+
+    
