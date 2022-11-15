@@ -114,6 +114,11 @@ class populationGraph(object):
         probBurnout = np.sum(self.getNetworkProp('burnout'))/self.numNodes
         print(probBurnout)
         resilience = expectedUtility*(1-probBurnout)
-        return resilience
+        return round(resilience,2)
 
+    def getNumNodes(self):
+        return self.numNodes
     
+    def getAgentMapping(self):
+        print(self.agentMapping)
+        return self.agentMapping

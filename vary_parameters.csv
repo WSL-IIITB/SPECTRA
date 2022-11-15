@@ -1,0 +1,10 @@
+msgUtility,costFactor,numNodes,numMsg,myseed,maxEpochs,type,advRatio,outcomeNetwork
+10,0.1,100,1000,67,10000,<class 'utilitarianAgent.utilitarianAgent'>,0,<populationGraph.populationGraph object at 0x7f89c53d7fa0>
+10,0.1,100,1000,67,10000,<class 'deonticAgent.deonticAgent'>,0,<populationGraph.populationGraph object at 0x7f89c5441160>
+10,0.1,100,1000,67,10000,<class 'virtuousAgent.virtuousAgent'>,0,<populationGraph.populationGraph object at 0x7f89c53d7520>
+10,0.1,100,1000,67,10000,<class 'transcendenceAgent.transcendenceAgent'>,0,<populationGraph.populationGraph object at 0x7f89c54a0250>
+msgUtility,costFactor,numNodes,numMsg,myseed,maxEpochs,type,advRatio,outcomeNetwork
+10,0.1,100,1000,67,10000,<class 'utilitarianAgent.utilitarianAgent'>,0,<populationGraph.populationGraph object at 0x7fa45c5db280>
+10,0.1,100,1000,67,10000,<class 'deonticAgent.deonticAgent'>,0,<populationGraph.populationGraph object at 0x7fa45756c340>
+10,0.1,100,1000,67,10000,<class 'virtuousAgent.virtuousAgent'>,0,<populationGraph.populationGraph object at 0x7fa45c5dbf40>
+10,0.1,100,1000,67,10000,<class 'transcendenceAgent.transcendenceAgent'>,0,<populationGraph.populationGraph object at 0x7fa45c66b490>

@@ -34,8 +34,11 @@ class virtuousAgent(ethicalAgent):
     
     def forwardMessage(self, source, dest):
         self.msgRecvFrom[source] += 1
-        cost = self.delta*(self.getNodeCost()-self.getNodeUtility())
+        cost = self.delta*(self.getNodeCost()-self.getNodeUtility())+self.msgCost
+        # print("cost : ", cost, " virtue points: ", self.virtuePoints )
         forwardUtility = -cost + min(self.virtueChange, self.maxVirtueUtility-self.virtuePoints)
+        # forwardUtility = -cost + self.virtueChange
+        # print("forward utility ", forwardUtility)
         if self.virtuePoints <= 0:
             dropUtility = -3*self.virtueChange
         else:

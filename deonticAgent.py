@@ -31,8 +31,8 @@ class deonticAgent(ethicalAgent):
         messagesSent = np.sum(list(self.msgSentTo.values()))-np.sum(list(self.msgForwardedOf.values()))
         if messagesSent >= self.experience:
             messagesForwarded = np.sum(list(self.msgForwardedBy.values()))
-            self.forwardProb *= (1-self.learningRate)
-            self.forwardProb += self.learningRate*messagesForwarded/messagesSent
+            self.forwardProb *= (1-self.learningRate)  
+            self.forwardProb += self.learningRate*(messagesForwarded/messagesSent)
 
     def forwardMessage(self, source, dest):
         self.msgRecvFrom[source] += 1
