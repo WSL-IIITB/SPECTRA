@@ -161,9 +161,9 @@ def plotComparative_shaded(outcomeDict,transDict,prop, attr, fig_label="dummy",m
             
             # y_std = [np.std(getNetworkProp(outcomeNetwork[val].getGraph(), prop)) for val in outcomeNetwork]
             # y_stderror = [value/len(y_std) for value in y_std]
-            if(prop=='burnout'or prop=='utility' or prop=='cost'):
-                y_vals=[np.sum(getNetworkProp(outcomeDict[outcome][val].getGraph(), prop))/(outcomeDict[outcome][val].getNumNodes()*(1-val)) for val in outcomeDict[outcome]]
-            else:
+            # if(prop=='burnout'or prop=='utility' or prop=='cost'):
+            #     y_vals=[np.sum(getNetworkProp(outcomeDict[outcome][val].getGraph(), prop))/(outcomeDict[outcome][val].getNumNodes()*(1-val)) for val in outcomeDict[outcome]]
+            # else:
                 y_vals = [np.mean(getNetworkProp(outcomeDict[outcome][val].getGraph(), prop)) for val in outcomeDict[outcome]]
         ax.plot(list(outcomeDict[outcome].keys()), y_vals)
     if(metric=="mean"):
@@ -171,12 +171,12 @@ def plotComparative_shaded(outcomeDict,transDict,prop, attr, fig_label="dummy",m
         # if(prop=='burnout' or prop=='utility' or prop=='cost'):
         #     y_low = [np.sum(getNetworkProp(transDict[0.1][val].getGraph(),prop))/(transDict[0.1][val].getNumNodes()*(1-val)) for val in transDict[0.1]]
         #     y_high = [np.sum(getNetworkProp(transDict[1][val].getGraph(),prop))/(transDict[1][val].getNumNodes()*(1-val)) for val in transDict[1]]
-        # else:
-            y_low = [np.mean(getNetworkProp(transDict[0.1][val].getGraph(), prop)) for val in transDict[0.1]]
-            y_high = [np.mean(getNetworkProp(transDict[1][val].getGraph(), prop)) for val in transDict[1]]
-    else:
         y_low = [np.mean(getNetworkProp(transDict[0.1][val].getGraph(), prop)) for val in transDict[0.1]]
         y_high = [np.mean(getNetworkProp(transDict[1][val].getGraph(), prop)) for val in transDict[1]]
+    else:
+        y_low = [np.sum(getNetworkProp(transDict[0.1][val].getGraph(), prop)) for val in transDict[0.1]]
+        y_high = [np.sum(getNetworkProp(transDict[1][val].getGraph(), prop)) for val in transDict[1]]
+
     ax.fill_between(transDict[0.1].keys(),y_low,y_high,color='grey',alpha=0.5)
     # plotAsPerType(list(outcomeNetwork.keys()), y_vals, y_stderror, ax, plotType)
     # ax.set_xticks(range(len(outcomeNetwork)),list(outcomeNetwork))
@@ -185,7 +185,8 @@ def plotComparative_shaded(outcomeDict,transDict,prop, attr, fig_label="dummy",m
     ax.set_ylabel(prop)
     if(metric=="mean"):
         ax.set_title("Average "+prop+" by varying "+attr)
-    ax.set_title(metric+" of "+prop+" by varying "+attr)
+    else:
+        ax.set_title(metric+" of "+prop+" by varying "+attr)
     fig.savefig("results/"+fig_label+".png", dpi=600)
     return y_vals
 

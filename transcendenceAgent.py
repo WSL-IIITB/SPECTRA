@@ -83,8 +83,10 @@ class transcendenceAgent(ethicalAgent):
         return self.distance
 
     def isStable(self, previousState):
-        curDist = np.sum(list(self.distance.values()))
-        prevDist = np.sum(list(previousState.getDistances().values()))
-        if np.absolute(curDist - prevDist) < 1e-2:
-            return 1
-        return 0
+        curDist = list(self.distance.values())
+        prevDist = list(previousState.getDistances().values())
+        for i in range(len(curDist)):
+            delta = curDist[i] - prevDist[i]
+            if np.absolute(delta) > 5e-2:
+                return 0
+        return 1

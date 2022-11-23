@@ -50,6 +50,7 @@ class ethicalAgent(object):
     def sendMessage(self, inter):
         # self.nodeCost[inter] += self.msgCost
         self.msgSentTo[inter] += 1
+        pass
 
     def getType(self):
         return self.type
