@@ -59,7 +59,7 @@ class populationGraph(object):
             if(sample <= val):
                 return idx
 
-    def createMsgs(self, numMsg,myseed = 32):
+    def createMsgs(self, numMsg, myseed = 32):
         msgList = []
         n = self.numNodes-1
         random.seed(myseed)
@@ -112,7 +112,6 @@ class populationGraph(object):
     def getResilience(self):
         expectedUtility = np.sum(self.getNetworkProp('utility'))/self.numNodes 
         probBurnout = np.sum(self.getNetworkProp('burnout'))/self.numNodes
-        print(probBurnout)
         resilience = expectedUtility*(1-probBurnout)
         return round(resilience,2)
 
@@ -120,5 +119,8 @@ class populationGraph(object):
         return self.numNodes
     
     def getAgentMapping(self):
-        print(self.agentMapping)
         return self.agentMapping
+    
+    def reset(self):
+        for id in range(self.numNodes):
+            self.G.nodes[id]['agent'].initNeig(self.G.neighbors(id))

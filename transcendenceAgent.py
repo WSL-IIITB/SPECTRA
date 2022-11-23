@@ -13,7 +13,7 @@ class transcendenceAgent(ethicalAgent):
         if('gamma' in attrs):
             self.gamma = attrs['gamma'] 
         else:
-            self.gamma = 0.3
+            self.gamma = 0.5
         if('updateEvery' in attrs):
             self.updateEvery = attrs['updateEvery']
         else:
@@ -87,6 +87,6 @@ class transcendenceAgent(ethicalAgent):
         prevDist = list(previousState.getDistances().values())
         for i in range(len(curDist)):
             delta = curDist[i] - prevDist[i]
-            if np.absolute(delta) > 5e-2:
+            if np.absolute(delta) > 8e-2:
                 return 0
         return 1

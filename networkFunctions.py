@@ -7,7 +7,6 @@ from transcendenceAgent import transcendenceAgent
 #graph initialization
 
 def initGraph(G, numNodes, common_attrs, type='Virtue'):
-
     nodeAttr = {}
     for i in range(numNodes):
         temp = {}
@@ -25,24 +24,23 @@ def initGraph(G, numNodes, common_attrs, type='Virtue'):
 
     for n in G.nodes():
         neigList = list(G.neighbors(n))
-        agent = G.nodes[n]['agent']
-        agent.initNeig(neigList)
+        G.nodes[n]['agent'].initNeig(neigList)
 
-def createMsgs(numMsg, numNodes, G):
-    msgList = []
-    n = numNodes-1
-    random.seed(2)
-    while(len(msgList) < numMsg):
-        inter = random.randint(0, n)
-        neigList = list(G.neighbors(inter))
-        if len(neigList) <= 1:
-            continue
-        source = random.choice(neigList)
-        neigList.remove(source)
-        dest = random.choice(neigList)
-        msg = [source, inter, dest]
-        msgList.append(msg)
-    return msgList
+# def createMsgs(numMsg, numNodes, G, seed=32):
+#     msgList = []
+#     n = numNodes-1
+#     random.seed(seed)
+#     while(len(msgList) < numMsg):
+#         inter = random.randint(0, n)
+#         neigList = list(G.neighbors(inter))
+#         if len(neigList) <= 1:
+#             continue
+#         source = random.choice(neigList)
+#         neigList.remove(source)
+#         dest = random.choice(neigList)
+#         msg = [source, inter, dest]
+#         msgList.append(msg)
+#     return msgList
 
 def transmitMsgs(msgList, G):
     nf, nd = (0,0)
