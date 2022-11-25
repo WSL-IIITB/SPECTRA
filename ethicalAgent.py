@@ -32,14 +32,16 @@ class ethicalAgent(object):
         self.burnoutCount = 0
         # self.nodeCost = {}
         # self.nodeUtility = {}
-        self.msgSentTo = {}
+        self.msgSentSource = {}
+        self.msgSentInter = {}
         self.msgRecvFrom = {}
         self.msgForwardedBy = {}
         self.msgForwardedOf = {}
 
     def initNeig(self, neigs):
         for nei in neigs:
-            self.msgSentTo[nei] = 0
+            self.msgSentSource[nei] = 0
+            self.msgSentInter[nei] = 0
             self.msgRecvFrom[nei] = 0
             self.msgForwardedBy[nei] = 0
             self.msgForwardedOf[nei] = 0
@@ -49,26 +51,30 @@ class ethicalAgent(object):
     
     def sendMessage(self, inter):
         # self.nodeCost[inter] += self.msgCost
-        self.msgSentTo[inter] += 1
+        self.msgSentSource[inter] += 1
         pass
 
     def getType(self):
         return self.type
     
+    def getNodeCostInter(self):
+        totalMessagesSent = np.sum(list(self.msgSentInter.values()))
+        return totalMessagesSent*self.msgCost
+
     def getNodeCost(self):
-        totalMessagesSent = np.sum(list(self.msgSentTo.values()))
+        totalMessagesSent = np.sum(list(self.msgSentSource.values())) + np.sum(list(self.msgSentInter.values()))
         return totalMessagesSent*self.msgCost
     
     def getNodeUtility(self):
         totalMessagesForwarded = np.sum(list(self.msgForwardedBy.values()))
-        totalMessagesDropped = np.sum(list(self.msgSentTo.values()))-np.sum(list(self.msgForwardedBy.values()))-np.sum(list(self.msgForwardedOf.values()))
+        totalMessagesDropped = np.sum(list(self.msgSentSource.values()))-np.sum(list(self.msgForwardedBy.values()))
         return (totalMessagesForwarded-totalMessagesDropped)*self.msgUtility
     
     def getBurnouts(self):
         return self.burnoutCount
 
     def getDropCount(self): 
-        totalMessagesDropped = np.sum(list(self.msgSentTo.values()))-np.sum(list(self.msgForwardedBy.values()))-np.sum(list(self.msgForwardedOf.values()))
+        totalMessagesDropped = np.sum(list(self.msgSentSource.values()))-np.sum(list(self.msgForwardedBy.values()))
         return totalMessagesDropped
     
     def getForwardCount(self):

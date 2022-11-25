@@ -25,7 +25,7 @@ class transcendenceAgent(ethicalAgent):
         if('learningRate' in attrs):
             self.learningRate = attrs['learningRate']
         else:
-            self.learningRate = 0.1
+            self.learningRate = 0.05
         self.virtualUtility = {}
         self.distance = {}
         self.firstIter = True
@@ -41,17 +41,18 @@ class transcendenceAgent(ethicalAgent):
 
 
     def __updateDistances(self):
-        neighs = list(self.msgSentTo.keys())
+        sources = list(self.msgForwardedOf.keys())
+        inters = list(self.msgForwardedBy.keys())
         costVec = []
         rewardVec = []
         # for nei in neighs:
             # asSource = self.msgSentTo[nei]-
-        costVec = [self.msgForwardedOf[nei]*self.msgCost for nei in neighs]
-        rewardVec = [self.msgForwardedBy[nei]*self.msgUtility+self.virtualUtility[nei] for nei in neighs]
+        costVec = [self.msgForwardedOf[source]*self.msgCost for source in sources]
+        rewardVec = [self.msgForwardedBy[neig]*self.msgUtility+self.virtualUtility[neig] for neig in inters]
         normCost = softmax(costVec)
         normReward = softmax(rewardVec)
 
-        for itr, nei in enumerate(neighs):
+        for itr, nei in enumerate(inters):
             deltaDist = normReward[itr]-normCost[itr]
             if(self.distance[nei]-(self.learningRate*deltaDist)<=0):
                 self.distance[nei] = 0
@@ -67,7 +68,7 @@ class transcendenceAgent(ethicalAgent):
         forwardProb = softmax([forwardUtility, dropUtility])[0]
 
         if(random.random() < forwardProb): #Forward message
-            self.msgSentTo[dest] += 1
+            self.msgSentInter[dest] += 1
             self.msgForwardedOf[source] += 1
             self.virtualUtility[source] += np.power(self.gamma, d)*self.msgUtility
             return True
@@ -87,6 +88,6 @@ class transcendenceAgent(ethicalAgent):
         prevDist = list(previousState.getDistances().values())
         for i in range(len(curDist)):
             delta = curDist[i] - prevDist[i]
-            if np.absolute(delta) > 8e-2:
+            if np.absolute(delta) > 49e-3:
                 return 0
         return 1

@@ -46,7 +46,7 @@ class virtuousAgent(ethicalAgent):
         forwardProb = softmax([forwardUtility, dropUtility])[0]
 
         if(random.random() < forwardProb): #Forward message
-            self.msgSentTo[dest] += 1
+            self.msgSentInter[dest] += 1
             self.msgForwardedOf[source] += 1
             self.virtuePoints += self.virtueChange
             return True

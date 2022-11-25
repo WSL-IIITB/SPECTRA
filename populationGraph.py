@@ -59,7 +59,7 @@ class populationGraph(object):
             if(sample <= val):
                 return idx
 
-    def createMsgs(self, numMsg, myseed = 32):
+    def createMsgs(self, numMsg, myseed = 67):
         msgList = []
         n = self.numNodes-1
         random.seed(myseed)

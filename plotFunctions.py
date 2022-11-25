@@ -218,3 +218,66 @@ def ethics_linePlots(outcomeList,prop,attr,metric="sum"):
         ax.plot(list(outcomeList[outcome].keys()), y_vals)
         ax.plot(list(outcomeList[outcome].keys()), y_vals_adv)
         ax.legend(types)
+
+def advRatio_shadedPlots(outcomeList,transDict,prop):
+    fig, ax = plt.subplots()
+    color_list = ['tab:blue','tab:orange','tab:green','tab:olive','tab:cyan','tab:pink']
+    count=0
+    for outcome in outcomeList:
+        # print(outcom  e)
+        var = outcomeList[outcome]
+        y_vals = []
+        y_vals_adv = []
+        for graph in var:
+            # print(var[graph])
+            types = list(var[graph].getAgentMapping().values())
+            # print(types)
+            G = var[graph].getGraph()
+            agentDict = {}
+            for i in types:
+                agentDict[i] = []
+            for agents in G:
+                agentType = G.nodes[agents]['agent'].getType()
+                agentDict[agentType].append(G.nodes[agents]['agent'])
+            # print(agentDict)
+            for i in agentDict:
+                if(len(agentDict[i]) != 0):
+                    agentDict[i] = np.sum([agent.getProperty(prop) for agent in agentDict[i]])
+                else:
+                    agentDict[i] = 0
+            # print(agentDict)
+            y_vals.append(agentDict[types[0]])
+            y_vals_adv.append(agentDict[types[1]])
+        ax.plot(list(outcomeList[outcome].keys()), y_vals,color=color_list[count])
+        count+=1
+    # ax.plot(list(outcomeList["Transcendence(0.5)"].keys()), y_vals_adv,color='r')
+    y_vals_trans = []
+    for outcome in transDict:
+        var = transDict[outcome]
+        y_vals = []
+        # y_vals_adv = []
+        for graph in var:
+            types = list(var[graph].getAgentMapping().values())
+            G = var[graph].getGraph()
+            agentDict = {}
+            for i in types:
+                agentDict[i] = []
+            for agents in G:
+                agentType = G.nodes[agents]['agent'].getType()
+                agentDict[agentType].append(G.nodes[agents]['agent'])
+            for i in agentDict:
+                if(len(agentDict[i]) != 0):
+                    agentDict[i] = np.sum([agent.getProperty(prop) for agent in agentDict[i]])
+                else:
+                    agentDict[i] = 0
+            y_vals.append(agentDict[types[0]])
+        y_vals_trans.append(y_vals)
+            # y_vals_adv.append(agentDict[types[1]])
+        # ax.plot(list(outcomeList[outcome].keys()), y_vals)
+
+    ax.fill_between(list(transDict[0.1].keys()),y_vals_trans[0],y_vals_trans[1],color='grey',alpha=0.5)
+    list1 = list(outcomeList.keys())
+    # list1.append("Adversary") 
+    ax.legend(list1)
+    ax.set_xlabel("Adversary Ratio")
+    ax.set_ylabel("Total Cost")

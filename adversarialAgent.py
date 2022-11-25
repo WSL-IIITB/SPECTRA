@@ -12,7 +12,7 @@ class adversarialAgent(ethicalAgent):
     def forwardMessage(self, source, dest):
         forwardProb = 0.05
         if(random.random() < forwardProb): #Forward message
-            self.msgSentTo[dest] += 1
+            self.msgSentInter[dest] += 1
             self.msgForwardedOf[source] += 1
             return True
         else:
