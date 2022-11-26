@@ -23,12 +23,12 @@ class deonticAgent(ethicalAgent):
         if('learningRate' in attrs):
             self.learningRate = attrs['learningRate']
         else:
-            self.learningRate = 0.1
+            self.learningRate = 0.05
     
     def sendOutcome(self, inter, sent):
         if sent:
             self.msgForwardedBy[inter] += 1
-        messagesSent = np.sum(list(self.msgSentInter.values()))
+        messagesSent = np.sum(list(self.msgSentSource.values()))
         if messagesSent >= self.experience:
             messagesForwarded = np.sum(list(self.msgForwardedBy.values()))
             self.forwardProb *= (1-self.learningRate)  
@@ -52,6 +52,6 @@ class deonticAgent(ethicalAgent):
         return super().getProperty(prop)
 
     def isStable(self, previousState):
-        if np.absolute(self.forwardProb - previousState.getForwardProb()) < 5e-2:
+        if np.absolute(self.forwardProb - previousState.getForwardProb()) < 1e-2:
             return 1
         return 0
