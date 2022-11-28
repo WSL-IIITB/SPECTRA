@@ -25,7 +25,7 @@ class transcendenceAgent(ethicalAgent):
         if('learningRate' in attrs):
             self.learningRate = attrs['learningRate']
         else:
-            self.learningRate = 0.05
+            self.learningRate = 0.07
         self.virtualUtility = {}
         self.distance = {}
         self.firstIter = True

@@ -16,9 +16,11 @@ class populationGraph(object):
         self.numNodes = numNodes
         self.seed = seed
         self.colorIdx = []
+        random.seed(self.seed)
         for i in range(self.numNodes):
             temp = {}
             idx = self.__getSample(cumRatio)
+            # idx = random.randint(0,1)
             self.colorIdx.append(idx)
             temp['agent'] = agent_types[idx](common_attrs)
             nodeAttr[i] = temp
@@ -124,3 +126,19 @@ class populationGraph(object):
     def reset(self):
         for id in range(self.numNodes):
             self.G.nodes[id]['agent'].initNeig(self.G.neighbors(id))
+
+    def getProportion(self):
+        types = list(self.getAgentMapping().values())
+        print(types)
+        propDict = {}
+        G = self.getGraph()
+        agentDict = {}
+        for i in types:
+            agentDict[i] = []
+        for agents in G:
+            agentType = G.nodes[agents]['agent'].getType()
+            agentDict[agentType].append(G.nodes[agents]['agent'])
+        for i in agentDict:
+            propDict[i] = len(agentDict[i])/self.numNodes
+        print(propDict)
+        return propDict, agentDict

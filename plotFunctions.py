@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from networkFunctions import getNetworkProp
 from populationGraph import *
+import chart_studio.plotly as py
 
 def plotAgentwiseProp(G, prop, plotMean = False, plotType = 'line', ax = None, label = None, color=None):
     numNodes = len(G.nodes())
@@ -68,7 +69,7 @@ def plotAgentWiseVaryParams(outcomeNetwork, prop, attr, plotType="line"):
     ax.set_title("Varying "+attr)
     ax.legend()
 
-def plotAsPerType(x, y, ystd, ax, plotType="line"):
+def plotAsPerType(x, y, ystd, fig, ax, plotType="line"):
     if(plotType=='bar'):
         ax.bar(x,y,yerr=ystd, color=['b','g','r','y'], align='center', alpha=0.5, ecolor='black', capsize=10)
         # ax.text(list(range(len(x))),np.zeros(len(y)),["sample" for _ in range(len(y))])#,[str(val) for val in y])
@@ -77,6 +78,7 @@ def plotAsPerType(x, y, ystd, ax, plotType="line"):
 
     elif(plotType=="line"):
         ax.plot(x,y)
+    # plotly_fig = py.plot_mpl(fig,filename="janvi")
 
 def plotNetworkVaryParams(outcomeNetwork, prop, attr, fig_label="dummy",metric="sum", plotType = 'line'):
     print("outcome network ", outcomeNetwork)
@@ -91,7 +93,7 @@ def plotNetworkVaryParams(outcomeNetwork, prop, attr, fig_label="dummy",metric="
         y_std = [np.std(getNetworkProp(outcomeNetwork[val].getGraph(), prop)) for val in outcomeNetwork]
         y_stderror = [value/len(y_std) for value in y_std]
     fig, ax = plt.subplots()
-    plotAsPerType(list(outcomeNetwork.keys()), y_vals, y_stderror, ax, plotType)
+    plotAsPerType(list(outcomeNetwork.keys()), y_vals, y_stderror, fig, ax, plotType)
     # ax.set_xticks(range(len(outcomeNetwork)),list(outcomeNetwork))
     ax.set_xlabel(attr)
     ax.set_ylabel(prop)
@@ -107,6 +109,7 @@ def plotComparative(outcomeDict, prop, attr, metric="sum", plotType = 'line'):
     # print([outcomeNetwork[val] for val in range(len(outcomeNetwork))])
     # propertyValues = getNetworkProp(outcomeNetwork, prop)
     # y_stderror = np.zeros(len(outcomeNetwork))
+    
     _, ax = plt.subplots()
     for outcome in outcomeDict:
         if(metric=="sum"):
@@ -153,6 +156,8 @@ def plotComparative_shaded(outcomeDict,transDict,prop, attr, fig_label="dummy",m
     # print([outcomeNetwork[val] for val in range(len(outcomeNetwork))])
     # propertyValues = getNetworkProp(outcomeNetwork, prop)
     # y_stderror = np.zeros(len(outcomeNetwork))
+    color_list = ['tab:blue','tab:orange','tab:green','tab:olive','tab:cyan','tab:pink']
+    count=0
     fig, ax = plt.subplots()
     for outcome in outcomeDict:
         if(metric=="sum"):
@@ -165,7 +170,8 @@ def plotComparative_shaded(outcomeDict,transDict,prop, attr, fig_label="dummy",m
             #     y_vals=[np.sum(getNetworkProp(outcomeDict[outcome][val].getGraph(), prop))/(outcomeDict[outcome][val].getNumNodes()*(1-val)) for val in outcomeDict[outcome]]
             # else:
                 y_vals = [np.mean(getNetworkProp(outcomeDict[outcome][val].getGraph(), prop)) for val in outcomeDict[outcome]]
-        ax.plot(list(outcomeDict[outcome].keys()), y_vals)
+        ax.plot(list(outcomeDict[outcome].keys()), y_vals,color=color_list[count])
+        count+=1
     if(metric=="mean"):
         # In case of Adv Ratio, uncomment this
         # if(prop=='burnout' or prop=='utility' or prop=='cost'):
@@ -177,10 +183,10 @@ def plotComparative_shaded(outcomeDict,transDict,prop, attr, fig_label="dummy",m
         y_low = [np.sum(getNetworkProp(transDict[0.1][val].getGraph(), prop)) for val in transDict[0.1]]
         y_high = [np.sum(getNetworkProp(transDict[1][val].getGraph(), prop)) for val in transDict[1]]
 
-    ax.fill_between(transDict[0.1].keys(),y_low,y_high,color='grey',alpha=0.5)
+    ax.fill_between(transDict[0.1].keys(),y_low,y_high,color='#c3e462',alpha=0.3)
     # plotAsPerType(list(outcomeNetwork.keys()), y_vals, y_stderror, ax, plotType)
     # ax.set_xticks(range(len(outcomeNetwork)),list(outcomeNetwork))
-    ax.legend(outcomeDict.keys())
+    ax.legend(outcomeDict.keys(),pos)
     ax.set_xlabel(attr)
     ax.set_ylabel(prop)
     if(metric=="mean"):
@@ -219,7 +225,7 @@ def ethics_linePlots(outcomeList,prop,attr,metric="sum"):
         ax.plot(list(outcomeList[outcome].keys()), y_vals_adv)
         ax.legend(types)
 
-def advRatio_shadedPlots(outcomeList,transDict,prop):
+def advRatio_shadedPlots(outcomeList,transDict,prop, attr,fig_label='dummy'):
     fig, ax = plt.subplots()
     color_list = ['tab:blue','tab:orange','tab:green','tab:olive','tab:cyan','tab:pink']
     count=0
@@ -275,9 +281,24 @@ def advRatio_shadedPlots(outcomeList,transDict,prop):
             # y_vals_adv.append(agentDict[types[1]])
         # ax.plot(list(outcomeList[outcome].keys()), y_vals)
 
-    ax.fill_between(list(transDict[0.1].keys()),y_vals_trans[0],y_vals_trans[1],color='grey',alpha=0.5)
+    ax.fill_between(list(transDict[0.1].keys()),y_vals_trans[0],y_vals_trans[1],color='#c3e462',alpha=0.3)
     list1 = list(outcomeList.keys())
     # list1.append("Adversary") 
     ax.legend(list1)
     ax.set_xlabel("Adversary Ratio")
-    ax.set_ylabel("Total Cost")
+    ax.set_ylabel("Total "+attr)
+    fig.savefig("results/"+fig_label+".png", dpi=600)
+
+def plot_bar(agentDict, prop):
+    types = list(agentDict.keys())
+    propDict = {}
+    for i in agentDict:
+        propDict[i] = np.mean([agent.getProperty(prop) for agent in agentDict[i]])
+    print(propDict)
+    print("type ", types)
+    plt.bar(types,list(propDict.values()),color=['b','g','r','y'], align='center', alpha=0.5, ecolor='black', capsize=10)
+    y = list(propDict.values())
+    for i in range(len(types)):
+        plt.text(i,y[i]/2,round(y[i],2),ha = 'center')
+    plt.xlabel("Type of Ethical Agent")
+    plt.ylabel("Total " + prop)
