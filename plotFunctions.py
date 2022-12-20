@@ -74,7 +74,7 @@ def plotAsPerType(x, y, ystd, fig, ax, plotType="line"):
         ax.bar(x,y,yerr=ystd, color=['b','g','r','y'], align='center', alpha=0.5, ecolor='black', capsize=10)
         # ax.text(list(range(len(x))),np.zeros(len(y)),["sample" for _ in range(len(y))])#,[str(val) for val in y])
         for i in range(len(x)):
-            ax.text(i,y[i]/2,y[i],ha = 'center')
+            ax.text(i,y[i]/2,round(y[i],2),ha = 'center')
 
     elif(plotType=="line"):
         ax.plot(x,y)
@@ -156,7 +156,7 @@ def plotComparative_shaded(outcomeDict,transDict,prop, attr, fig_label="dummy",m
     # print([outcomeNetwork[val] for val in range(len(outcomeNetwork))])
     # propertyValues = getNetworkProp(outcomeNetwork, prop)
     # y_stderror = np.zeros(len(outcomeNetwork))
-    color_list = ['tab:blue','tab:orange','tab:green','tab:olive','tab:cyan','tab:pink']
+    color_list = ['darkslateblue','limegreen','firebrick','darkgoldenrod']
     count=0
     fig, ax = plt.subplots()
     for outcome in outcomeDict:
@@ -183,16 +183,16 @@ def plotComparative_shaded(outcomeDict,transDict,prop, attr, fig_label="dummy",m
         y_low = [np.sum(getNetworkProp(transDict[0.1][val].getGraph(), prop)) for val in transDict[0.1]]
         y_high = [np.sum(getNetworkProp(transDict[1][val].getGraph(), prop)) for val in transDict[1]]
 
-    ax.fill_between(transDict[0.1].keys(),y_low,y_high,color='#c3e462',alpha=0.3)
+    ax.fill_between(transDict[0.1].keys(),y_low,y_high,color='#ffe838',alpha=0.25)
     # plotAsPerType(list(outcomeNetwork.keys()), y_vals, y_stderror, ax, plotType)
     # ax.set_xticks(range(len(outcomeNetwork)),list(outcomeNetwork))
-    ax.legend(outcomeDict.keys(),pos)
+    ax.legend(outcomeDict.keys(),ncol=1,bbox_to_anchor=(0.5, 0.75))
     ax.set_xlabel(attr)
-    ax.set_ylabel(prop)
+    # ax.set_ylabel(prop)
     if(metric=="mean"):
-        ax.set_title("Average "+prop+" by varying "+attr)
+        ax.set_ylabel("Average "+prop)
     else:
-        ax.set_title(metric+" of "+prop+" by varying "+attr)
+        ax.set_ylabel("Total "+prop)
     fig.savefig("results/"+fig_label+".png", dpi=600)
     return y_vals
 
@@ -225,9 +225,9 @@ def ethics_linePlots(outcomeList,prop,attr,metric="sum"):
         ax.plot(list(outcomeList[outcome].keys()), y_vals_adv)
         ax.legend(types)
 
-def advRatio_shadedPlots(outcomeList,transDict,prop, attr,fig_label='dummy'):
+def advRatio_shadedPlots(outcomeList,transDict,prop, attr, metric="sum",fig_label='dummy'):
     fig, ax = plt.subplots()
-    color_list = ['tab:blue','tab:orange','tab:green','tab:olive','tab:cyan','tab:pink']
+    color_list = ['darkslateblue','limegreen','firebrick','darkgoldenrod']
     count=0
     for outcome in outcomeList:
         # print(outcom  e)
@@ -246,17 +246,25 @@ def advRatio_shadedPlots(outcomeList,transDict,prop, attr,fig_label='dummy'):
                 agentType = G.nodes[agents]['agent'].getType()
                 agentDict[agentType].append(G.nodes[agents]['agent'])
             # print(agentDict)
-            for i in agentDict:
-                if(len(agentDict[i]) != 0):
-                    agentDict[i] = np.sum([agent.getProperty(prop) for agent in agentDict[i]])
-                else:
-                    agentDict[i] = 0
+            if metric == "sum":
+                for i in agentDict:
+                    if(len(agentDict[i]) != 0):
+                        agentDict[i] = np.sum([agent.getProperty(prop) for agent in agentDict[i]])
+                    else:
+                        agentDict[i] = 0
+            elif metric == "mean":
+                for i in agentDict:
+                    if(len(agentDict[i]) != 0):
+                        agentDict[i] = np.mean([agent.getProperty(prop) for agent in agentDict[i]])
+                    else:
+                        agentDict[i] = 0
             # print(agentDict)
             y_vals.append(agentDict[types[0]])
             y_vals_adv.append(agentDict[types[1]])
         ax.plot(list(outcomeList[outcome].keys()), y_vals,color=color_list[count])
         count+=1
-    # ax.plot(list(outcomeList["Transcendence(0.5)"].keys()), y_vals_adv,color='r')
+    ax.plot(list(outcomeList["Transcendence(0.25)"].keys()), y_vals_adv,color='r')
+    ax.legend('Adversary')
     y_vals_trans = []
     for outcome in transDict:
         var = transDict[outcome]
@@ -271,22 +279,32 @@ def advRatio_shadedPlots(outcomeList,transDict,prop, attr,fig_label='dummy'):
             for agents in G:
                 agentType = G.nodes[agents]['agent'].getType()
                 agentDict[agentType].append(G.nodes[agents]['agent'])
-            for i in agentDict:
-                if(len(agentDict[i]) != 0):
-                    agentDict[i] = np.sum([agent.getProperty(prop) for agent in agentDict[i]])
-                else:
-                    agentDict[i] = 0
+            if metric == "sum":
+                for i in agentDict:
+                    if(len(agentDict[i]) != 0):
+                        agentDict[i] = np.sum([agent.getProperty(prop) for agent in agentDict[i]])
+                    else:
+                        agentDict[i] = 0
+            elif metric == "mean":
+                for i in agentDict:
+                    if(len(agentDict[i]) != 0):
+                        agentDict[i] = np.mean([agent.getProperty(prop) for agent in agentDict[i]])
+                    else:
+                        agentDict[i] = 0
             y_vals.append(agentDict[types[0]])
         y_vals_trans.append(y_vals)
             # y_vals_adv.append(agentDict[types[1]])
         # ax.plot(list(outcomeList[outcome].keys()), y_vals)
 
-    ax.fill_between(list(transDict[0.1].keys()),y_vals_trans[0],y_vals_trans[1],color='#c3e462',alpha=0.3)
+    ax.fill_between(list(transDict[0.1].keys()),y_vals_trans[0],y_vals_trans[1],color='#ffe838',alpha=0.25)
     list1 = list(outcomeList.keys())
-    # list1.append("Adversary") 
+    list1.append("Adversary") 
     ax.legend(list1)
     ax.set_xlabel("Adversary Ratio")
-    ax.set_ylabel("Total "+attr)
+    if metric == "sum":
+        ax.set_ylabel("Total "+attr)
+    elif metric == "mean":
+         ax.set_ylabel("Average "+attr)
     fig.savefig("results/"+fig_label+".png", dpi=600)
 
 def plot_bar(agentDict, prop):
@@ -302,3 +320,108 @@ def plot_bar(agentDict, prop):
         plt.text(i,y[i]/2,round(y[i],2),ha = 'center')
     plt.xlabel("Type of Ethical Agent")
     plt.ylabel("Total " + prop)
+
+def plotShaded(rangeDict, prop, attr, legend_title, fig_label="dummy",metric="sum"):
+    fig, ax = plt.subplots()
+    keys_list = list(rangeDict.keys())
+    if(metric=="mean"):
+        y_low = [np.mean(getNetworkProp(rangeDict[keys_list[0]][val].getGraph(), prop)) for val in rangeDict[keys_list[0]]]
+        y_high = [np.mean(getNetworkProp(rangeDict[keys_list[1]][val].getGraph(), prop)) for val in rangeDict[keys_list[1]]]
+    else:
+        y_low = [np.sum(getNetworkProp(rangeDict[keys_list[0]][val].getGraph(), prop)) for val in rangeDict[keys_list[0]]]
+        y_high = [np.sum(getNetworkProp(rangeDict[keys_list[1]][val].getGraph(), prop)) for val in rangeDict[keys_list[1]]]
+    ax.plot(list(rangeDict[keys_list[0]].keys()),y_low)
+    ax.plot(list(rangeDict[keys_list[1]].keys()),y_high)
+    ax.fill_between(rangeDict[keys_list[0]].keys(),y_low,y_high,color='#ffe838',alpha=0.25)
+    ax.legend(rangeDict.keys(),ncol=1,bbox_to_anchor=(0.5, 0.75),title=legend_title)
+    # plotAsPerType(list(outcomeNetwork.keys()), y_vals, y_stderror, ax, plotType)
+    # ax.set_xticks(range(len(outcomeNetwork)),list(outcomeNetwork))
+    ax.set_xlabel(attr)
+    # ax.set_ylabel(prop)
+    if(metric=="mean"):
+        ax.set_ylabel("Average "+prop)
+    else:
+        ax.set_ylabel("Total "+prop)
+    fig.savefig("results/"+fig_label+".png", dpi=600)
+
+def advShaded(rangeDict, prop, attr, legend_title, fig_label="dummy",metric="sum"):
+    fig, ax = plt.subplots()
+    color_list = ['darkslateblue','limegreen','firebrick','darkgoldenrod']
+    count=0
+    for outcome in outcomeList:
+        # print(outcom  e)
+        var = outcomeList[outcome]
+        y_vals = []
+        y_vals_adv = []
+        for graph in var:
+            # print(var[graph])
+            types = list(var[graph].getAgentMapping().values())
+            # print(types)
+            G = var[graph].getGraph()
+            agentDict = {}
+            for i in types:
+                agentDict[i] = []
+            for agents in G:
+                agentType = G.nodes[agents]['agent'].getType()
+                agentDict[agentType].append(G.nodes[agents]['agent'])
+            # print(agentDict)
+            if metric == "sum":
+                for i in agentDict:
+                    if(len(agentDict[i]) != 0):
+                        agentDict[i] = np.sum([agent.getProperty(prop) for agent in agentDict[i]])
+                    else:
+                        agentDict[i] = 0
+            elif metric == "mean":
+                for i in agentDict:
+                    if(len(agentDict[i]) != 0):
+                        agentDict[i] = np.mean([agent.getProperty(prop) for agent in agentDict[i]])
+                    else:
+                        agentDict[i] = 0
+            # print(agentDict)
+            y_vals.append(agentDict[types[0]])
+            y_vals_adv.append(agentDict[types[1]])
+        ax.plot(list(outcomeList[outcome].keys()), y_vals,color=color_list[count])
+        count+=1
+    ax.plot(list(outcomeList["Transcendence(0.25)"].keys()), y_vals_adv,color='r')
+    ax.legend('Adversary')
+    y_vals_trans = []
+    for outcome in transDict:
+        var = transDict[outcome]
+        y_vals = []
+        # y_vals_adv = []
+        for graph in var:
+            types = list(var[graph].getAgentMapping().values())
+            G = var[graph].getGraph()
+            agentDict = {}
+            for i in types:
+                agentDict[i] = []
+            for agents in G:
+                agentType = G.nodes[agents]['agent'].getType()
+                agentDict[agentType].append(G.nodes[agents]['agent'])
+            if metric == "sum":
+                for i in agentDict:
+                    if(len(agentDict[i]) != 0):
+                        agentDict[i] = np.sum([agent.getProperty(prop) for agent in agentDict[i]])
+                    else:
+                        agentDict[i] = 0
+            elif metric == "mean":
+                for i in agentDict:
+                    if(len(agentDict[i]) != 0):
+                        agentDict[i] = np.mean([agent.getProperty(prop) for agent in agentDict[i]])
+                    else:
+                        agentDict[i] = 0
+            y_vals.append(agentDict[types[0]])
+        y_vals_trans.append(y_vals)
+            # y_vals_adv.append(agentDict[types[1]])
+        # ax.plot(list(outcomeList[outcome].keys()), y_vals)
+
+    ax.fill_between(list(transDict[0.1].keys()),y_vals_trans[0],y_vals_trans[1],color='#ffe838',alpha=0.25)
+    list1 = list(outcomeList.keys())
+    list1.append("Adversary") 
+    ax.legend(list1)
+    ax.set_xlabel("Adversary Ratio")
+    if metric == "sum":
+        ax.set_ylabel("Total "+attr)
+    elif metric == "mean":
+         ax.set_ylabel("Average "+attr)
+    fig.savefig("results/"+fig_label+".png", dpi=600)

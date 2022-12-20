@@ -92,6 +92,8 @@ class ethicalAgent(object):
             return self.getDropCount()
         elif(prop == 'forwards'):
             return self.getForwardCount()
+        elif(prop == 'forward_ratio'):
+            return (self.getForwardCount() - self.getDropCount()) / (self.getForwardCount() + self.getDropCount())
         return "NA"
 
     def burnoutUpdate(self):
