@@ -74,11 +74,13 @@ class ethicalAgent(object):
         return self.burnoutCount
 
     def getDropCount(self): 
-        totalMessagesDropped = np.sum(list(self.msgSentSource.values()))-np.sum(list(self.msgForwardedBy.values()))
+        # totalMessagesDropped = np.sum(list(self.msgSentSource.values()))-np.sum(list(self.msgForwardedBy.values()))
+        totalMessagesDropped = np.sum(list(self.msgRecvFrom.values()))-np.sum(list(self.msgForwardedOf.values()))
         return totalMessagesDropped
     
     def getForwardCount(self):
-        totalMessagesForwarded = np.sum(list(self.msgForwardedBy.values()))
+        # totalMessagesForwarded = np.sum(list(self.msgForwardedBy.values()))
+        totalMessagesForwarded = np.sum(list(self.msgForwardedOf.values()))
         return totalMessagesForwarded
 
     def getProperty(self, prop):
@@ -93,7 +95,12 @@ class ethicalAgent(object):
         elif(prop == 'forwards'):
             return self.getForwardCount()
         elif(prop == 'forward_ratio'):
-            return (self.getForwardCount() - self.getDropCount()) / (self.getForwardCount() + self.getDropCount())
+            # forwarded = np.sum(list(self.msgForwardedOf.values()))
+            # dropped = np.sum(list(self.msgRecvFrom.values())) - np.sum(list(self.msgForwardedOf.values()))
+            # print("fwd ", forwarded, "drop ", dropped)
+            if(self.getForwardCount() ==0 and self.getDropCount()==0):
+                return 0
+            return (self.getForwardCount()-self.getDropCount())/(self.getForwardCount()+self.getDropCount())
         return "NA"
 
     def burnoutUpdate(self):
