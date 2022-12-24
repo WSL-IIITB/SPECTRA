@@ -54,6 +54,10 @@ class ethicalAgent(object):
         self.msgSentSource[inter] += 1
         pass
 
+    def recvMessage(self, source):
+        self.msgRecvFrom[source] += 1
+        # print("recv ",self.msgRecvFrom[source])
+
     def getType(self):
         return self.type
     
@@ -75,12 +79,16 @@ class ethicalAgent(object):
 
     def getDropCount(self): 
         # totalMessagesDropped = np.sum(list(self.msgSentSource.values()))-np.sum(list(self.msgForwardedBy.values()))
-        totalMessagesDropped = np.sum(list(self.msgRecvFrom.values()))-np.sum(list(self.msgForwardedOf.values()))
+        totalMessagesDropped = np.sum(list(self.msgRecvFrom.values()))-np.sum(list(self.msgSentInter.values()))
+        a = np.sum(list(self.msgRecvFrom.values()))
+        b = np.sum(list(self.msgSentInter.values()))
+        # if b > a:
+            # print("here",b,a)
         return totalMessagesDropped
     
     def getForwardCount(self):
         # totalMessagesForwarded = np.sum(list(self.msgForwardedBy.values()))
-        totalMessagesForwarded = np.sum(list(self.msgForwardedOf.values()))
+        totalMessagesForwarded = np.sum(list(self.msgSentInter.values()))
         return totalMessagesForwarded
 
     def getProperty(self, prop):
@@ -94,11 +102,11 @@ class ethicalAgent(object):
             return self.getDropCount()
         elif(prop == 'forwards'):
             return self.getForwardCount()
-        elif(prop == 'forward_ratio'):
+        elif(prop == 'responsibility_score'):
             # forwarded = np.sum(list(self.msgForwardedOf.values()))
             # dropped = np.sum(list(self.msgRecvFrom.values())) - np.sum(list(self.msgForwardedOf.values()))
-            # print("fwd ", forwarded, "drop ", dropped)
-            if(self.getForwardCount() ==0 and self.getDropCount()==0):
+            # print("fwd ", self.getForwardCount(), "drop ", self.getDropCount())
+            if self.getForwardCount() == 0 and self.getDropCount() == 0:
                 return 0
             return (self.getForwardCount()-self.getDropCount())/(self.getForwardCount()+self.getDropCount())
         return "NA"
@@ -125,7 +133,7 @@ class ethicalAgent(object):
         return
 
     @abstractclassmethod
-    def forwardMessage(self, source , dest):
+    def forwardMessage(self, source, dest):
         pass
 
     @abstractclassmethod

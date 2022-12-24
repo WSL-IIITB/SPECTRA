@@ -9,6 +9,7 @@ class utilitarianAgent(ethicalAgent):
         super().__init__("Utilitarian", attrs)
 
     def forwardMessage(self, source, dest):
+        # self.msgRecvFrom[source] += 1
         forwardUtility = self.msgUtility - self.msgCost
         dropUtility = - self.msgUtility
         forwardProb = softmax([forwardUtility, dropUtility])[0]

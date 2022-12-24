@@ -97,11 +97,14 @@ def plotNetworkVaryParams(outcomeNetwork, prop, attr, fig_label="dummy",metric="
     plotAsPerType(list(outcomeNetwork.keys()), y_vals, y_stderror, fig, ax, plotType)
     # ax.set_xticks(range(len(outcomeNetwork)),list(outcomeNetwork))
     ax.set_xlabel(attr)
-    ax.set_ylabel(prop)
-    if(metric=="mean"):
-        ax.set_title("average "+prop+" by varying "+attr)
+    if metric == "mean":
+        ax.set_ylabel("Average " + prop)
     else:
-        ax.set_title(metric+" of "+prop+" by varying "+attr)
+        ax.set_ylabel("Total " + prop)
+    # if(metric=="mean"):
+    #     ax.set_title("average "+prop+" by varying "+attr)
+    # else:
+    #     ax.set_title(metric+" of "+prop+" by varying "+attr)
     fig.savefig("results/"+fig_label+".png", dpi=600)
     return y_vals
 
@@ -397,9 +400,9 @@ def advShaded(rangeDict, prop, attr, legend_title, fig_label="dummy",metric="sum
     list_new = copy.deepcopy(list(rangeDict.keys()))
     list_new.append("Adversary ("+ str(list_keys[1])+ ")")
     ax.legend(list_new,ncol=1,title=legend_title)
-    ax.set_xlabel("Adversary Ratio")
+    ax.set_xlabel(attr)
     if metric == "sum":
-        ax.set_ylabel("Total "+attr)
+        ax.set_ylabel("Total "+prop)
     elif metric == "mean":
-         ax.set_ylabel("Average "+attr)
+         ax.set_ylabel("Average "+prop)
     fig.savefig("results/"+fig_label+".png", dpi=600)

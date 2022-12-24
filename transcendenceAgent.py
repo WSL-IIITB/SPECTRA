@@ -60,7 +60,7 @@ class transcendenceAgent(ethicalAgent):
                 self.distance[nei] = self.distance[nei] - (self.learningRate*deltaDist)
 
     def forwardMessage(self, source, dest):
-        self.msgRecvFrom[source] += 1
+        # self.msgRecvFrom[source] += 1
         cost = self.delta*(self.getNodeCost()-self.getNodeUtility())+self.msgCost
         d = self.distance[source]
         forwardUtility = (-cost+np.power(self.gamma, d)*self.msgUtility)/(1+np.power(self.gamma, d))

@@ -35,7 +35,7 @@ class deonticAgent(ethicalAgent):
             self.forwardProb += self.learningRate*(messagesForwarded/messagesSent)
 
     def forwardMessage(self, source, dest):
-        self.msgRecvFrom[source] += 1
+        # self.msgRecvFrom[source] += 1
         if(random.random() < self.forwardProb): #Forward message
             self.msgSentInter[dest] += 1
             self.msgForwardedOf[source] += 1

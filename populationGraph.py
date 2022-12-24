@@ -91,12 +91,18 @@ class populationGraph(object):
             inter = self.G.nodes[i]['agent']
             dest = self.G.nodes[d]['agent']
             source.sendMessage(i)
+            inter.recvMessage(s)
+
             inter_burntout = inter.burnoutUpdate()
             if(not inter_burntout):
                 sent = inter.forwardMessage(s,d)
             else:
                 sent = False
             source.sendOutcome(i,sent)
+            a = np.sum(list(inter.msgRecvFrom.values()))
+            b =  np.sum(list(inter.msgSentInter.values()))
+            if b>a:
+                print(inter, a, b)
             # print(getNetworkProp(G, 'forwardProb'))
             if sent:
                 nf += 1
