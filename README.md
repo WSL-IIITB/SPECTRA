@@ -1,1 +1,5 @@
 # Comparative-Ethics
+
+In this project, we present SPECTRA - Strategic Protocol Evaluation and Configuration Testbed for Responsible Autonomy which is designed as a framework to compare autonomous agents with different models of ethics. It is built on a network representing a multi-agent setup, where different ethical agents interact with each other over time. The framework presents a *responsibility dilemma* i.e. a scenario with conflicting choices, one which is individually beneficial for the agent and the other which is individually suboptimal for the agent but good for the system or the collective.
+
+Using the SPECTRA framework, we model ethical agents driven by different paradigms of ethics like Deontology, Virtue Ethics, Utilitarianism and a recently introduced paradigm of Computational Transcendence. 
